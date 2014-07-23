@@ -1,3 +1,3 @@
-# AV demo
+# AV
 
-Images with HTML5 audio play/pause demo.
+Images with HTML5 audio play/pause.
