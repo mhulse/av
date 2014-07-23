@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+	
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	
+	<title></title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	
+	<style>
+		
+		body {
+			padding: 0 1em;
+			margin: 0;
+		}
+		.box {
+			height: 1000px;
+			background: #eee;
+			border: 1px solid red;
+			margin: 1em 0;
+			cursor: pointer;
+			cursor: hand;
+		}
+		
+	</style>
+	
+</head>
+<body>
+	
+	<div id="one" class="box"></div>
+	<div id="two" class="box"></div>
+	<div id="three" class="box"></div>
+	<div id="four" class="box"></div>
+	
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<!--<script src="waypoints.min.js"></script>-->
+	<!--<script src="buzz.min.js"></script>-->
+	<script src="howler.min.js"></script>
+	
+	<script>
+		
+		$(document).ready(function() {
+			
+			function play() {
+				
+				console.log('play');
+				
+				var toggled = this.data('toggled');
+				this.data('toggled', ( ! toggled));
+				
+			}
+			
+			var sounds = {
+				'one' : new Howl({ urls: ['one/one.mp3', 'one/one.ogg'], loop: true, volume: 1 }),
+				'two' : new Howl({ urls: ['two/two.mp3', 'two/two.ogg'], loop: true, volume: 1 }),
+				'three' : new Howl({ urls: ['three/three.mp3', 'three/three.ogg'], loop: true, volume: 1 }),
+				'four' : new Howl({ urls: ['four/four.mp3', 'four/four.ogg'], loop: true, volume: 1 })
+			};
+			var last;
+			
+			$('.box').on('click', function() {
+				
+				var $this = $(this);
+				var current = $this.attr('id');
+				var toggled = $this.data('toggled');
+				
+				if (typeof last != 'undefined') {
+					
+					console.log(current, last);
+					
+					if (current != last) {
+						
+						console.log('foo');
+						
+						$('#' + last).data('toggled');
+						$('#' + last).data('toggled', ( ! toggled));
+						
+						sounds[last]
+							.stop();
+						
+						sounds[current]
+							.play(function() {
+								play.call($this)
+							})
+							.fade(0, 1, 1000)
+						
+						last = current;
+						
+					} else {
+						
+						if ($this.data('toggled')) {
+							
+							sounds[current].pause();
+							$this.data('toggled', ( ! toggled));
+							
+						} else {
+							
+							sounds[current]
+								.play(function() {
+									play.call($this)
+								})
+								.fade(0, 1, 1000);
+							
+						}
+						
+					}
+					
+				} else {
+					
+					last = $this.attr('id');
+					sounds[last]
+						.play(function() {
+							play.call($this)
+						})
+						.fade(0, 1, 1000);
+					
+				}
+				
+			});
+				
+		});
+		
+		// var sounds = {
+		// 	'one' : (new buzz.sound( "one/one", { formats: ["ogg", "mp3"], loop: true })),
+		// 	'two' : (new buzz.sound( "two/two", { formats: ["ogg", "mp3"], loop: true })),
+		// 	'three' : (new buzz.sound( "three/three", { formats: ["ogg", "mp3"], loop: true })),
+		// 	'four' : (new buzz.sound( "four/four", { formats: ["ogg", "mp3"], loop: true }))
+		// };
+		// var current = '';
+		// $('.box').on('click', function() {
+		// 	var $this = $(this);
+		// 	console.log(current);
+		// 	if (current.length) {
+		// 		console.log('CURRENT');
+		// 		sounds[current].stop().fadeOut(10000, function() {
+		// 			console.log('fade out complete');
+		// 			current = $this.attr('id');
+		// 			sounds[current].play().fadeIn(10000, function() {
+		// 				console.log('fade in complete');
+		// 			});
+		// 		});
+		// 	} else {
+		// 		console.log('NO CURRENT');
+		// 		current = $this.attr('id');
+		// 		sounds[current].fadeIn(10000, function() {
+		// 			console.log('fade in complete');
+		// 		});
+		// 	}
+		
+		// $('.box').waypoint(
+		// 	function(direction) {
+				
+				// var obj;
+				// if (direction == 'up') {
+				// 	obj = $(this).waypoint('prev');
+				// 	console.log(direction, this, obj);
+				// 	//sounds[this.id].fadeWith(sounds[obj.attr('id')], 5000);
+				// } else {
+				// 	obj = $(this).waypoint('next');
+				// 	console.log(direction, this, obj);
+				// 	//sounds[this.id].fadeWith(sounds[obj.attr('id')], 5000);
+				// }
+				
+				// console.log(direction, this);
+				// //buzz.all().stop();
+				// sounds[this.id].fadeIn(5000);
+				
+		// 	}, {
+		// 		horizontal: false,
+		// 		offset: '100%' // Fires when "the second this thing starts coming into view at the bottom".
+		// 	}
+		// );
+		
+	</script>
+	
+</body>
+</html>
